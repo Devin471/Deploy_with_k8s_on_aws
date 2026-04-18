@@ -13,6 +13,8 @@ spec:
       labels:
         app: backend
     spec:
+      imagePullSecrets:
+        - name: ecr-secret
       containers:
         - name: backend
           image: 486979600614.dkr.ecr.ap-south-1.amazonaws.com/fashion-backend:latest
@@ -22,19 +24,16 @@ spec:
           env:
             - name: PORT
               value: "5000"
-
             - name: MONGO_URI
               valueFrom:
                 secretKeyRef:
                   name: backend-secret
                   key: MONGO_URI
-
             - name: GOOGLE_CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: backend-secret
                   key: GOOGLE_CLIENT_ID
-
             - name: GOOGLE_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:

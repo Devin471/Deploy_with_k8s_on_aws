@@ -13,6 +13,8 @@ spec:
       labels:
         app: frontend
     spec:
+      imagePullSecrets:
+        - name: ecr-secret
       containers:
         - name: frontend
           image: 486979600614.dkr.ecr.ap-south-1.amazonaws.com/fashion-frontend:latest
