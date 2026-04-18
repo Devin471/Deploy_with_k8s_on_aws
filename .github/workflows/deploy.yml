@@ -1,0 +1,60 @@
+name: Deploy to Self-Managed Kubernetes
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set image tag
+        run: echo "IMAGE_TAG=${GITHUB_SHA}" >> $GITHUB_ENV
+
+      - name: Build and push frontend image
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ env.IMAGE_TAG }}
+        run: |
+          docker build -t $REGISTRY/fashion-frontend:$IMAGE_TAG ./frontend
+          docker push $REGISTRY/fashion-frontend:$IMAGE_TAG
+
+      - name: Build and push backend image
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ env.IMAGE_TAG }}
+        run: |
+          docker build -t $REGISTRY/fashion-backend:$IMAGE_TAG ./backend
+          docker push $REGISTRY/fashion-backend:$IMAGE_TAG
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy new images on master node
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "
+            kubectl set image deployment/frontend frontend=${{ steps.login-ecr.outputs.registry }}/fashion-frontend:${GITHUB_SHA} -n fashion &&
+            kubectl set image deployment/backend backend=${{ steps.login-ecr.outputs.registry }}/fashion-backend:${GITHUB_SHA} -n fashion &&
+            kubectl rollout status deployment/frontend -n fashion &&
+            kubectl rollout status deployment/backend -n fashion
+          "
