@@ -1,0 +1,29 @@
+{
+  "name": "fashion-design-ecommerce",
+  "version": "1.0.0",
+  "description": "Complete Fashion Design E-Commerce Platform",
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [
+    "fashion",
+    "ecommerce",
+    "design",
+    "clothing"
+  ],
+  "engines": {
+    "node": "14.0.0",
+    "python": "3.8.0"
+  },
+  "scripts": {
+    "setup": "npm install && cd backend && npm install && cd ../frontend && npm install && cd ..",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm start",
+    "start": "npm run dev:backend & npm run dev:frontend",
+    "build": "cd frontend && npm run build",
+    "seed": "cd backend && npm run seed"
+  }
+}
