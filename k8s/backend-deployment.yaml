@@ -15,15 +15,28 @@ spec:
     spec:
       containers:
         - name: backend
-          image: ACCOUNT_ID.dkr.ecr.ap-south-1.amazonaws.com/fashion-backend:latest
+          image: 486979600614.dkr.ecr.ap-south-1.amazonaws.com/fashion-backend:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 5000
           env:
             - name: PORT
               value: "5000"
+
             - name: MONGO_URI
               valueFrom:
                 secretKeyRef:
                   name: backend-secret
                   key: MONGO_URI
+
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: GOOGLE_CLIENT_ID
+
+            - name: GOOGLE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: GOOGLE_CLIENT_SECRET
