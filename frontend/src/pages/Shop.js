@@ -22,7 +22,7 @@ export default function Shop() {
   });
   const page = parseInt(searchParams.get('page')) || 1;
 
-  useEffect(() => { api.get('/api/categories').then(r => setCategories(r.data)).catch(() => {}); }, []);
+  useEffect(() => { api.get('/categories').then(r => setCategories(r.data)).catch(() => {}); }, []);
 
   useEffect(() => {
     (async () => {

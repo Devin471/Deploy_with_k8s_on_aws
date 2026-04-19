@@ -12,7 +12,7 @@ export default function OrderHistory() {
 
   useEffect(() => {
     (async () => {
-      try { const { data } = await api.get('/api/orders/my'); setOrders(data); }
+      try { const { data } = await api.get('/orders/my'); setOrders(data); }
       catch {}
       setLoading(false);
     })();

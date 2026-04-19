@@ -12,7 +12,7 @@ export default function Contact() {
     e.preventDefault();
     setLoading(true);
     try {
-      await api.post('/api/users/tickets', form);
+      await api.post('/users/tickets', form);
       setSent(true);
     } catch {}
     setLoading(false);

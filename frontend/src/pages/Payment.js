@@ -44,7 +44,7 @@ export default function Payment() {
       if (!scriptLoaded) throw new Error('Failed to load Razorpay');
 
       // Create order on backend
-      const { data } = await api.post('/api/orders', {
+      const { data } = await api.post('/orders', {
         shippingAddress: address,
         paymentMethod: method,
         items: items,
@@ -56,7 +56,7 @@ export default function Payment() {
       const orderId = data.order?._id || data._id;
 
       // Create Razorpay order
-      const { data: razorpayData } = await api.post('/api/orders/create-razorpay-order', {
+      const { data: razorpayData } = await api.post('/orders/create-razorpay-order', {
         orderId: orderId,
         amount: Math.round(total * 100), // Convert to paise
       });
@@ -77,7 +77,7 @@ export default function Payment() {
         handler: async (response) => {
           try {
             // Verify payment on backend
-            const { data: verifyData } = await api.post('/api/orders/verify-razorpay-payment', {
+            const { data: verifyData } = await api.post('/orders/verify-razorpay-payment', {
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,

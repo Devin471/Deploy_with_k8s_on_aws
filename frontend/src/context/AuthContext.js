@@ -19,7 +19,7 @@ export function AuthProvider({ children }) {
   /* ── Customer ── */
   const loginCustomer = async (email, password) => {
     try {
-      const { data } = await api.post('/api/auth/login', { email, password });
+      const { data } = await api.post('/auth/login', { email, password });
       localStorage.setItem('customerToken', data.token);
       localStorage.setItem('customer', JSON.stringify(data.user));
       setCustomerToken(data.token); setCustomer(data.user);
@@ -29,14 +29,14 @@ export function AuthProvider({ children }) {
     }
   };
   const registerCustomer = async (name, email, password, phone) => {
-    const { data } = await api.post('/api/auth/register', { name, email, password, phone });
+    const { data } = await api.post('/auth/register', { name, email, password, phone });
     localStorage.setItem('customerToken', data.token);
     localStorage.setItem('customer', JSON.stringify(data.user));
     setCustomerToken(data.token); setCustomer(data.user);
     return data.user;
   };
   const loginCustomerWithGoogle = async (accessToken) => {
-    const { data } = await api.post('/api/auth/google', { accessToken, role: 'customer' });
+    const { data } = await api.post('/auth/google', { accessToken, role: 'customer' });
     localStorage.setItem('customerToken', data.token);
     localStorage.setItem('customer', JSON.stringify(data.user));
     setCustomerToken(data.token); setCustomer(data.user);
@@ -49,21 +49,21 @@ export function AuthProvider({ children }) {
 
   /* ── Seller ── */
   const loginSeller = async (email, password) => {
-    const { data } = await api.post('/api/auth/seller/login', { email, password });
+    const { data } = await api.post('/auth/seller/login', { email, password });
     localStorage.setItem('sellerToken', data.token);
     localStorage.setItem('seller', JSON.stringify(data.seller));
     setSellerToken(data.token); setSeller(data.seller);
     return data.seller;
   };
   const registerSeller = async (payload) => {
-    const { data } = await api.post('/api/auth/seller/register', payload);
+    const { data } = await api.post('/auth/seller/register', payload);
     localStorage.setItem('sellerToken', data.token);
     localStorage.setItem('seller', JSON.stringify(data.seller));
     setSellerToken(data.token); setSeller(data.seller);
     return data.seller;
   };
   const loginSellerWithGoogle = async (accessToken) => {
-    const { data } = await api.post('/api/auth/google', { accessToken, role: 'seller' });
+    const { data } = await api.post('/auth/google', { accessToken, role: 'seller' });
     localStorage.setItem('sellerToken', data.token);
     localStorage.setItem('seller', JSON.stringify(data.seller));
     setSellerToken(data.token); setSeller(data.seller);
@@ -76,14 +76,14 @@ export function AuthProvider({ children }) {
 
   /* ── Admin ── */
   const loginAdmin = async (email, password) => {
-    const { data } = await api.post('/api/auth/admin/login', { email, password });
+    const { data } = await api.post('/auth/admin/login', { email, password });
     localStorage.setItem('adminToken', data.token);
     localStorage.setItem('admin', JSON.stringify(data.admin));
     setAdminToken(data.token); setAdmin(data.admin);
     return data.admin;
   };
   const registerAdmin = async (name, email, password) => {
-    const { data } = await api.post('/api/auth/admin/register', { name, email, password });
+    const { data } = await api.post('/auth/admin/register', { name, email, password });
     localStorage.setItem('adminToken', data.token);
     localStorage.setItem('admin', JSON.stringify(data.admin));
     setAdminToken(data.token); setAdmin(data.admin);

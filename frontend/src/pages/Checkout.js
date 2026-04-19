@@ -58,7 +58,7 @@ export default function Checkout() {
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await api.get('/api/users/profile');
+        const { data } = await api.get('/users/profile');
         const addresses = data.addresses || [];
         setSavedAddresses(addresses);
 
@@ -132,7 +132,7 @@ export default function Checkout() {
         return;
       }
 
-      const { data } = await api.post('/api/users/addresses', payload);
+      const { data } = await api.post('/users/addresses', payload);
       const latestAddresses = Array.isArray(data) ? data : [];
       const saved = latestAddresses.find((addr) => isSameAddress(addr, payload)) || payload;
       setSavedAddresses(latestAddresses);

@@ -34,8 +34,8 @@ export default function ProductDetail() {
   const submitReview = async e => {
     e.preventDefault();
     try {
-      await api.post('/api/reviews', { productId: product._id, ...reviewForm });
-      const rv = await api.get(`/api/reviews/product/${id}`);
+      await api.post('/reviews', { productId: product._id, ...reviewForm });
+      const rv = await api.get(`/reviews/product/${id}`);
       setReviews(rv.data);
       setReviewForm({ rating: 5, title: '', comment: '' });
     } catch {}
