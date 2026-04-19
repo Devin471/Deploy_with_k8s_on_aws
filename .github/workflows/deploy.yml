@@ -1,4 +1,4 @@
-name: Build and Deploy to EKS-style Kubernetes on EC2
+name: Build and Deploy to Self-Managed Kubernetes on EC2
 
 on:
   push:
@@ -54,7 +54,7 @@ jobs:
 
       - name: Deploy on EC2 master
         run: |
-          ssh -i ~/.ssh/ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
             set -e
 
             aws configure set aws_access_key_id "${{ secrets.AWS_ACCESS_KEY_ID }}"
@@ -64,13 +64,14 @@ jobs:
             aws ecr get-login-password --region "${{ secrets.AWS_REGION }}" | sudo docker login --username AWS --password-stdin 486979600614.dkr.ecr.ap-south-1.amazonaws.com
 
             cd ~/Deploy_with_k8s_on_aws
+            git pull origin main
 
-            sed -i "s|image: .*fashion-frontend.*|image: 486979600614.dkr.ecr.ap-south-1.amazonaws.com/fashion-frontend:${IMAGE_TAG}|g" k8s/frontend-deployment.yaml || true
-            sed -i "s|image: .*fashion-backend.*|image: 486979600614.dkr.ecr.ap-south-1.amazonaws.com/fashion-backend:${IMAGE_TAG}|g" k8s/backend-deployment.yaml || true
+            kubectl set image deployment/frontend frontend=486979600614.dkr.ecr.ap-south-1.amazonaws.com/fashion-frontend:${IMAGE_TAG} -n fashion
+            kubectl set image deployment/backend backend=486979600614.dkr.ecr.ap-south-1.amazonaws.com/fashion-backend:${IMAGE_TAG} -n fashion
 
-            kubectl apply -f k8s/
-            kubectl rollout restart deployment frontend -n default || true
-            kubectl rollout restart deployment backend -n default || true
-            kubectl get pods
-            kubectl get svc
+            kubectl rollout status deployment/frontend -n fashion
+            kubectl rollout status deployment/backend -n fashion
+
+            kubectl get pods -n fashion
+            kubectl get svc -n fashion
           EOF
