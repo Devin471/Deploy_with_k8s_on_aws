@@ -39,3 +39,8 @@ spec:
                 secretKeyRef:
                   name: backend-secret
                   key: GOOGLE_CLIENT_SECRET
+            - name: GOOGLE_CALLBACK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: GOOGLE_CALLBACK_URL
