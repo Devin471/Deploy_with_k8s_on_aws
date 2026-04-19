@@ -64,7 +64,9 @@ jobs:
             aws ecr get-login-password --region "${{ secrets.AWS_REGION }}" | sudo docker login --username AWS --password-stdin 486979600614.dkr.ecr.ap-south-1.amazonaws.com
 
             cd ~/Deploy_with_k8s_on_aws
-            git pull origin main
+            git fetch origin main
+            git reset --hard origin/main
+            git clean -fd
 
             kubectl set image deployment/frontend frontend=486979600614.dkr.ecr.ap-south-1.amazonaws.com/fashion-frontend:${IMAGE_TAG} -n fashion
             kubectl set image deployment/backend backend=486979600614.dkr.ecr.ap-south-1.amazonaws.com/fashion-backend:${IMAGE_TAG} -n fashion
