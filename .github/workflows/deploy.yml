@@ -54,7 +54,11 @@ jobs:
 
       - name: Deploy on EC2 master
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
+          ssh -o StrictHostKeyChecking=no \
+              -o ServerAliveInterval=30 \
+              -o ServerAliveCountMax=12 \
+              -i ~/.ssh/ec2_key.pem \
+              ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
             set -e
 
             aws configure set aws_access_key_id "${{ secrets.AWS_ACCESS_KEY_ID }}"
@@ -64,15 +68,23 @@ jobs:
             aws ecr get-login-password --region "${{ secrets.AWS_REGION }}" | sudo docker login --username AWS --password-stdin 486979600614.dkr.ecr.ap-south-1.amazonaws.com
 
             cd ~/Deploy_with_k8s_on_aws
+
             git fetch origin main
             git reset --hard origin/main
             git clean -fd
 
+            kubectl delete secret ecr-secret -n fashion --ignore-not-found
+            kubectl create secret docker-registry ecr-secret \
+              --docker-server=486979600614.dkr.ecr.ap-south-1.amazonaws.com \
+              --docker-username=AWS \
+              --docker-password="\$(aws ecr get-login-password --region "${{ secrets.AWS_REGION }}")" \
+              -n fashion
+
             kubectl set image deployment/frontend frontend=486979600614.dkr.ecr.ap-south-1.amazonaws.com/fashion-frontend:${IMAGE_TAG} -n fashion
             kubectl set image deployment/backend backend=486979600614.dkr.ecr.ap-south-1.amazonaws.com/fashion-backend:${IMAGE_TAG} -n fashion
 
-            kubectl rollout status deployment/frontend -n fashion
-            kubectl rollout status deployment/backend -n fashion
+            kubectl rollout status deployment/frontend -n fashion --timeout=10m
+            kubectl rollout status deployment/backend -n fashion --timeout=10m
 
             kubectl get pods -n fashion
             kubectl get svc -n fashion
