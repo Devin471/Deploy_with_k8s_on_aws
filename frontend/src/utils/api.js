@@ -8,13 +8,8 @@ const getBaseURL = () => {
     return process.env.REACT_APP_BACKEND_URL;
   }
   
-  // If running on production (Vercel), use backend on Render
-  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-    return 'https://fasion-website-1.onrender.com';
-  }
   
-  // Development: use localhost
-  return 'http://localhost:5000';
+  return '/api';
 };
 
 const api = axios.create({
