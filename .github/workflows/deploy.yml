@@ -1,16 +1,24 @@
-name: Deploy to Self-Managed Kubernetes
+name: Build and Deploy to EKS-style Kubernetes on EC2
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
+
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  ECR_REGISTRY: 486979600614.dkr.ecr.ap-south-1.amazonaws.com
+  FRONTEND_REPO: fashion-frontend
+  BACKEND_REPO: fashion-backend
+  IMAGE_TAG: ${{ github.sha }}
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source code
+      - name: Checkout source
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
@@ -21,40 +29,48 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Login to Amazon ECR
-        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Set image tag
-        run: echo "IMAGE_TAG=${GITHUB_SHA}" >> $GITHUB_ENV
-
       - name: Build and push frontend image
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ env.IMAGE_TAG }}
         run: |
-          docker build -t $REGISTRY/fashion-frontend:$IMAGE_TAG ./frontend
-          docker push $REGISTRY/fashion-frontend:$IMAGE_TAG
+          docker build -t $ECR_REGISTRY/$FRONTEND_REPO:$IMAGE_TAG ./frontend
+          docker tag $ECR_REGISTRY/$FRONTEND_REPO:$IMAGE_TAG $ECR_REGISTRY/$FRONTEND_REPO:latest
+          docker push $ECR_REGISTRY/$FRONTEND_REPO:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$FRONTEND_REPO:latest
 
       - name: Build and push backend image
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ env.IMAGE_TAG }}
         run: |
-          docker build -t $REGISTRY/fashion-backend:$IMAGE_TAG ./backend
-          docker push $REGISTRY/fashion-backend:$IMAGE_TAG
+          docker build -t $ECR_REGISTRY/$BACKEND_REPO:$IMAGE_TAG ./backend
+          docker tag $ECR_REGISTRY/$BACKEND_REPO:$IMAGE_TAG $ECR_REGISTRY/$BACKEND_REPO:latest
+          docker push $ECR_REGISTRY/$BACKEND_REPO:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$BACKEND_REPO:latest
 
       - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/ec2_key.pem
+          chmod 600 ~/.ssh/ec2_key.pem
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Deploy new images on master node
+      - name: Deploy on EC2 master
         run: |
-          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "
-            kubectl set image deployment/frontend frontend=${{ steps.login-ecr.outputs.registry }}/fashion-frontend:${GITHUB_SHA} -n fashion &&
-            kubectl set image deployment/backend backend=${{ steps.login-ecr.outputs.registry }}/fashion-backend:${GITHUB_SHA} -n fashion &&
-            kubectl rollout status deployment/frontend -n fashion &&
-            kubectl rollout status deployment/backend -n fashion
-          "
+          ssh -i ~/.ssh/ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            set -e
+
+            aws configure set aws_access_key_id "${{ secrets.AWS_ACCESS_KEY_ID }}"
+            aws configure set aws_secret_access_key "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+            aws configure set default.region "${{ secrets.AWS_REGION }}"
+
+            aws ecr get-login-password --region "${{ secrets.AWS_REGION }}" | sudo docker login --username AWS --password-stdin 486979600614.dkr.ecr.ap-south-1.amazonaws.com
+
+            cd ~/Deploy_with_k8s_on_aws
+
+            sed -i "s|image: .*fashion-frontend.*|image: 486979600614.dkr.ecr.ap-south-1.amazonaws.com/fashion-frontend:${IMAGE_TAG}|g" k8s/frontend-deployment.yaml || true
+            sed -i "s|image: .*fashion-backend.*|image: 486979600614.dkr.ecr.ap-south-1.amazonaws.com/fashion-backend:${IMAGE_TAG}|g" k8s/backend-deployment.yaml || true
+
+            kubectl apply -f k8s/
+            kubectl rollout restart deployment frontend -n default || true
+            kubectl rollout restart deployment backend -n default || true
+            kubectl get pods
+            kubectl get svc
+          EOF
