@@ -53,7 +53,7 @@ export default function Home() {
         
         <HeroContent
           tag="Modern Fashion Story"
-          title="Discover the new you"
+          title="Discover the new for you"
           text="Curated runway-inspired styles in dark, beige, and coral tones. Premium fits, elegant textures, and everyday confidence."
           buttons={
             <>
