@@ -36,7 +36,7 @@ export default function Shop() {
         if (filters.brand) params.set('brand', filters.brand);
         if (filters.size) params.set('size', filters.size);
         if (filters.color) params.set('color', filters.color);
-        const { data } = await api.get(`/api/products?${params}`);
+        const { data } = await api.get(`/products?${params}`);
         setProducts(data.products || data);
         setTotal(data.total || 0);
       } catch {}

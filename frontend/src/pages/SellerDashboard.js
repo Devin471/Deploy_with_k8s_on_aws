@@ -423,6 +423,7 @@ export default function SellerDashboard() {
   const location = useLocation();
   const navigate = useNavigate();
   const path = location.pathname;
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Redirect to login if not authenticated
   if (!isSeller) {
@@ -448,7 +449,12 @@ export default function SellerDashboard() {
 
   return (
     <div className="sd-layout">
-      <aside className="sd-sidebar">
+      <button className="sd-hamburger" onClick={() => setSidebarOpen(!sidebarOpen)}>
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <aside className={`sd-sidebar ${sidebarOpen ? 'open' : ''}`} onClick={() => setSidebarOpen(false)}>
         <div className="sd-brand">
           <Link to="/"><span className="logo-icon">♦</span> My<span className="logo-gold">Fashion</span></Link>
           <span className="sd-role">Seller Panel</span>

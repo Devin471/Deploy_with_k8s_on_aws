@@ -262,6 +262,7 @@ export default function AdminDashboard() {
   const location = useLocation();
   const navigate = useNavigate();
   const path = location.pathname;
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const links = [
     { to: '/admin/dashboard', label: 'Dashboard', icon: '📊' },
@@ -278,7 +279,12 @@ export default function AdminDashboard() {
 
   return (
     <div className="sd-layout">
-      <aside className="sd-sidebar">
+      <button className="sd-hamburger" onClick={() => setSidebarOpen(!sidebarOpen)}>
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <aside className={`sd-sidebar ${sidebarOpen ? 'open' : ''}`} onClick={() => setSidebarOpen(false)}>
         <div className="sd-brand">
           <Link to="/"><span className="logo-icon">♦</span> My<span className="logo-gold">Fashion</span></Link>
           <span className="sd-role">Admin Panel</span>

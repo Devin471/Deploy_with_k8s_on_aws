@@ -15,6 +15,11 @@
 .sd-sidebar-footer button { width:100%; padding:.5rem; background:rgba(231,76,60,.1); border:1px solid rgba(231,76,60,.2); color:#e74c3c; border-radius:var(--radius); cursor:pointer; font-size:.82rem; font-family:inherit; transition:all .3s; }
 .sd-sidebar-footer button:hover { background:rgba(231,76,60,.2); }
 
+/* Hamburger Menu */
+.sd-hamburger { display:none; position:fixed; top:1rem; left:1rem; z-index:1000; width:40px; height:40px; padding:0; background:#fff; border:1px solid rgba(212,168,67,.2); border-radius:var(--radius); cursor:pointer; flex-direction:column; justify-content:center; align-items:center; gap:6px; transition:all .3s; }
+.sd-hamburger:hover { background:rgba(212,168,67,.08); }
+.sd-hamburger span { display:block; width:24px; height:2px; background:var(--text); border-radius:1px; transition:all .3s; }
+
 .sd-main { padding:2rem; overflow-y:auto; }
 .sd-main h2 { color:var(--text); font-size:1.4rem; font-weight:700; margin-bottom:1.5rem; }
 
@@ -75,6 +80,8 @@
 
 @media(max-width:768px) {
   .sd-layout { grid-template-columns:1fr; }
-  .sd-sidebar { position:fixed; left:-100%; width:260px; z-index:999; transition:left .3s; }
+  .sd-hamburger { display:flex; }
+  .sd-sidebar { position:fixed; left:-100%; width:260px; height:100vh; z-index:999; transition:left .3s ease; top:0; }
   .sd-sidebar.open { left:0; }
+  .sd-main { padding:1.5rem 1rem; padding-top:4rem; }
 }
