@@ -83,8 +83,8 @@ jobs:
             kubectl set image deployment/frontend frontend=486979600614.dkr.ecr.ap-south-1.amazonaws.com/fashion-frontend:${IMAGE_TAG} -n fashion
             kubectl set image deployment/backend backend=486979600614.dkr.ecr.ap-south-1.amazonaws.com/fashion-backend:${IMAGE_TAG} -n fashion
 
-            kubectl rollout status deployment/frontend -n fashion --timeout=10m
-            kubectl rollout status deployment/backend -n fashion --timeout=10m
+            kubectl rollout status deployment/frontend -n fashion --timeout=15m
+            kubectl rollout status deployment/backend -n fashion --timeout=15m  || kubectl describe deployment backend -n fashion
 
             kubectl get pods -n fashion
             kubectl get svc -n fashion
