@@ -44,3 +44,13 @@ spec:
                 secretKeyRef:
                   name: backend-secret
                   key: CLIENT_URL
+            - name: RAZORPAY_KEY_ID
+              valueFrom:
+               secretKeyRef:
+                  name: payment-secret
+                  key: RAZORPAY_KEY_ID
+            - name: RAZORPAY_KEY_SECRET
+              valueFrom:
+               secretKeyRef:
+                 name: payment-secret
+                 key: RAZORPAY_KEY_SECRET
