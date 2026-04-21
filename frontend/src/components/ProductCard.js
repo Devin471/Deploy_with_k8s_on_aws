@@ -1,20 +1,34 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { FaShoppingCart, FaEdit, FaTrash, FaStar, FaBolt } from 'react-icons/fa';
+import { FaShoppingCart, FaEdit, FaTrash, FaStar, FaBolt, FaCheck } from 'react-icons/fa';
 import './ProductCard.css';
 
 function ProductCard({ product, onAddToCart, isAdmin, onDelete, onEdit }) {
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const { isCustomer } = useAuth();
+  const [addingToCart, setAddingToCart] = useState(false);
+  const [justAddedToCart, setJustAddedToCart] = useState(false);
+  const justAddedTimerRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (justAddedTimerRef.current) clearTimeout(justAddedTimerRef.current);
+    };
+  }, []);
 
   const handleAddToCart = async () => {
     try {
       console.log('[ProductCard] Add to Cart clicked for product:', product._id);
       console.log('[ProductCard] Is customer:', isCustomer);
+
+      if (!product?._id) return;
+      if (addingToCart) return;
+
+      setAddingToCart(true);
       
       if (!isCustomer) {
         // Allow guests to add to local storage cart
@@ -28,7 +42,9 @@ function ProductCard({ product, onAddToCart, isAdmin, onDelete, onEdit }) {
         }
         localStorage.setItem('guestCart', JSON.stringify(guest));
         console.log('[ProductCard] Guest cart updated:', guest);
-        alert('Item added to cart! (Login to checkout)');
+        setJustAddedToCart(true);
+        if (justAddedTimerRef.current) clearTimeout(justAddedTimerRef.current);
+        justAddedTimerRef.current = setTimeout(() => setJustAddedToCart(false), 1500);
         return;
       }
       
@@ -37,13 +53,17 @@ function ProductCard({ product, onAddToCart, isAdmin, onDelete, onEdit }) {
       console.log('[ProductCard] addToCart result:', result);
       
       if (result?.success) {
-        alert('Item added to cart!');
+        setJustAddedToCart(true);
+        if (justAddedTimerRef.current) clearTimeout(justAddedTimerRef.current);
+        justAddedTimerRef.current = setTimeout(() => setJustAddedToCart(false), 1500);
       } else {
         alert(result?.message || 'Failed to add item');
       }
     } catch (err) {
       console.error('[ProductCard] Error adding to cart:', err);
       alert('Error adding to cart');
+    } finally {
+      setAddingToCart(false);
     }
   };
 
@@ -94,13 +114,25 @@ function ProductCard({ product, onAddToCart, isAdmin, onDelete, onEdit }) {
             <motion.button
               className="product-button btn-add-cart"
               onClick={handleClick}
-              disabled={product.stock === 0}
+              disabled={product.stock === 0 || addingToCart}
               whileHover={{ scale: 1.08, y: -3 }}
               whileTap={{ scale: 0.96, y: 0 }}
               transition={{ type: 'spring', stiffness: 400, damping: 12 }}
               title="Add quantity 1 to cart"
             >
-              <FaShoppingCart /> {product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
+              {product.stock === 0 ? (
+                <>
+                  <FaShoppingCart /> Out of Stock
+                </>
+              ) : justAddedToCart ? (
+                <>
+                  <FaCheck />
+                </>
+              ) : (
+                <>
+                  <FaShoppingCart /> {addingToCart ? 'Adding…' : 'Add to Cart'}
+                </>
+              )}
             </motion.button>
             <motion.button
               className="product-button btn-buy-now"

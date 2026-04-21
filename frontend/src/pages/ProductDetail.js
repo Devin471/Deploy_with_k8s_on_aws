@@ -1,5 +1,5 @@
 /* ─── Product Detail — Golden Luxury ───────────────── */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import api from '../utils/api';
@@ -16,6 +16,9 @@ export default function ProductDetail() {
   const [selectedImg, setSelectedImg] = useState(0);
   const [qty, setQty] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [addingToCart, setAddingToCart] = useState(false);
+  const [justAddedToCart, setJustAddedToCart] = useState(false);
+  const justAddedTimerRef = useRef(null);
   const [reviewForm, setReviewForm] = useState({ rating: 5, title: '', comment: '' });
   const [reviewMessage, setReviewMessage] = useState('');
   const [tab, setTab] = useState('description');
@@ -33,20 +36,34 @@ export default function ProductDetail() {
     })();
   }, [id]);
 
+  useEffect(() => {
+    return () => {
+      if (justAddedTimerRef.current) clearTimeout(justAddedTimerRef.current);
+    };
+  }, []);
+
   const handleAddToCart = async () => { 
     try {
       console.log('[ProductDetail] Add to Cart clicked, quantity:', qty);
+      if (!product?._id) return;
+      if (addingToCart) return;
+
+      setAddingToCart(true);
       const result = await addToCart(product._id, qty);
       console.log('[ProductDetail] addToCart result:', result);
       
       if (result?.success) {
-        alert('Added ' + qty + ' item(s) to cart!');
+        setJustAddedToCart(true);
+        if (justAddedTimerRef.current) clearTimeout(justAddedTimerRef.current);
+        justAddedTimerRef.current = setTimeout(() => setJustAddedToCart(false), 1500);
       } else {
         alert(result?.message || 'Failed to add to cart');
       }
     } catch (err) {
       console.error('[ProductDetail] Error adding to cart:', err);
       alert('Error adding to cart');
+    } finally {
+      setAddingToCart(false);
     }
   };
   
@@ -138,12 +155,12 @@ export default function ProductDetail() {
               <motion.button 
                 className="btn btn-primary" 
                 onClick={handleAddToCart} 
-                disabled={product.stock === 0}
+                disabled={product.stock === 0 || addingToCart}
                 whileHover={{ scale: 1.08, y: -3 }}
                 whileTap={{ scale: 0.96, y: 0 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 12 }}
               >
-                Add to Cart
+                {justAddedToCart ? '✓' : (addingToCart ? 'Adding…' : 'Add to Cart')}
               </motion.button>
               <motion.button 
                 className="btn btn-buy-now" 
