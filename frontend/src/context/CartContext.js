@@ -43,22 +43,34 @@ export function CartProvider({ children }) {
   const addToCart = async (productId, quantity = 1) => {
     try {
       setError(null);
+      console.log(`[Cart] Adding product ${productId} with quantity ${quantity}`);
+      
       if (!isCustomer) {
         // Guest cart
         const guest = JSON.parse(localStorage.getItem('guestCart') || '{"items":[]}');
         const idx = guest.items.findIndex(i => (i.product?._id || i.product) === productId);
-        if (idx > -1) guest.items[idx].quantity += quantity;
-        else guest.items.push({ product: productId, quantity });
+        if (idx > -1) {
+          guest.items[idx].quantity += quantity;
+        } else {
+          guest.items.push({ product: productId, quantity });
+        }
         localStorage.setItem('guestCart', JSON.stringify(guest));
         setCart(guest);
-        return;
+        console.log('[Cart] Guest cart updated:', guest);
+        return { success: true, message: 'Item added to cart!' };
       }
+      
       // Server cart
+      console.log('[Cart] Adding to server cart for authenticated user');
       const { data } = await api.post('/cart', { productId, quantity });
       setCart(data || { items: [] });
+      console.log('[Cart] Server cart updated:', data);
+      return { success: true, message: 'Item added to cart!' };
     } catch (err) {
-      console.error('Failed to add to cart:', err);
-      setError('Failed to add item to cart');
+      console.error('[Cart] Failed to add to cart:', err);
+      const errorMsg = err.response?.data?.message || 'Failed to add item to cart';
+      setError(errorMsg);
+      return { success: false, message: errorMsg };
     }
   };
 

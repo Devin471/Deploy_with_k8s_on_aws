@@ -1,6 +1,7 @@
 /* ─── Product Detail — Golden Luxury ───────────────── */
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import api from '../utils/api';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
@@ -32,15 +33,42 @@ export default function ProductDetail() {
     })();
   }, [id]);
 
-  const handleAddToCart = () => { 
-    addToCart(product._id, qty); 
+  const handleAddToCart = async () => { 
+    try {
+      console.log('[ProductDetail] Add to Cart clicked, quantity:', qty);
+      const result = await addToCart(product._id, qty);
+      console.log('[ProductDetail] addToCart result:', result);
+      
+      if (result?.success) {
+        alert('Added ' + qty + ' item(s) to cart!');
+      } else {
+        alert(result?.message || 'Failed to add to cart');
+      }
+    } catch (err) {
+      console.error('[ProductDetail] Error adding to cart:', err);
+      alert('Error adding to cart');
+    }
   };
-  const handleBuyNow = () => { 
-    addToCart(product._id, qty);
-    // Redirect to checkout after adding to cart
-    setTimeout(() => {
-      window.location.href = '/checkout';
-    }, 300);
+  
+  const handleBuyNow = async () => { 
+    try {
+      console.log('[ProductDetail] Buy Now clicked, quantity:', qty);
+      const result = await addToCart(product._id, qty);
+      console.log('[ProductDetail] addToCart result:', result);
+      
+      if (result?.success) {
+        console.log('[ProductDetail] Redirecting to checkout');
+        // Redirect to checkout after adding to cart
+        setTimeout(() => {
+          window.location.href = '/checkout';
+        }, 500);
+      } else {
+        alert(result?.message || 'Failed to add to cart');
+      }
+    } catch (err) {
+      console.error('[ProductDetail] Error adding to cart:', err);
+      alert('Error adding to cart');
+    }
   };
   const toggleWish = () => isInWishlist(product._id) ? removeFromWishlist(product._id) : addToWishlist(product._id);
   const submitReview = async e => {
@@ -107,8 +135,26 @@ export default function ProductDetail() {
               <button onClick={() => setQty(q => Math.min(product.stock, q + 1))}>+</button>
             </div>
             <div className="pd-buttons">
-              <button className="btn btn-primary" onClick={handleAddToCart} disabled={product.stock === 0}>Add to Cart</button>
-              <button className="btn btn-buy-now" onClick={handleBuyNow} disabled={product.stock === 0}>Buy Now</button>
+              <motion.button 
+                className="btn btn-primary" 
+                onClick={handleAddToCart} 
+                disabled={product.stock === 0}
+                whileHover={{ scale: 1.08, y: -3 }}
+                whileTap={{ scale: 0.96, y: 0 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 12 }}
+              >
+                Add to Cart
+              </motion.button>
+              <motion.button 
+                className="btn btn-buy-now" 
+                onClick={handleBuyNow} 
+                disabled={product.stock === 0}
+                whileHover={{ scale: 1.08, y: -3 }}
+                whileTap={{ scale: 0.96, y: 0 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 12 }}
+              >
+                Buy Now
+              </motion.button>
             </div>
             <button className={`pd-wish-btn ${wishlisted ? 'active' : ''}`} onClick={toggleWish}>{wishlisted ? '♥' : '♡'}</button>
           </div>

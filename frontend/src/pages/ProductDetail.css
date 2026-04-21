@@ -34,12 +34,73 @@
 .pd-qty button { width:38px; height:38px; background:transparent; border:none; color:#fff; font-size:1.1rem; cursor:pointer; transition:background .3s; }
 .pd-qty button:hover { background:rgba(212,168,67,.15); }
 .pd-qty span { padding:0 .8rem; color:#fff; font-size:.92rem; min-width:30px; text-align:center; }
-.pd-buttons { display: flex; gap: 1rem; flex: 1; min-width: 300px; }
-.btn-primary { flex: 1; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, var(--gold), #d4a857); color: #1a1917; border: none; border-radius: var(--radius); font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 1rem; }
-.btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(212, 168, 67, 0.3); }
-.btn-buy-now { flex: 1; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #27ae60, #229954); color: white; border: none; border-radius: var(--radius); font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 1rem; }
-.btn-buy-now:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(39, 174, 96, 0.3); }
-.btn-primary:disabled, .btn-buy-now:disabled { opacity: 0.6; cursor: not-allowed; }
+.pd-buttons { display: flex; gap: 0.8rem; flex: 1; min-width: 250px; }
+
+@keyframes buttonPulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7); }
+  50% { box-shadow: 0 0 0 6px rgba(255, 152, 0, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); }
+}
+
+@keyframes slideUp {
+  0% { transform: translateY(2px); opacity: 0.8; }
+  100% { transform: translateY(-2px); opacity: 1; }
+}
+
+.btn-primary { 
+  flex: 1; 
+  padding: 0.65rem 1.2rem; 
+  background: linear-gradient(135deg, #ffb74d 0%, #ffa726 100%); 
+  color: #fff; 
+  border: none; 
+  border-radius: 6px; 
+  font-weight: 700; 
+  cursor: pointer; 
+  transition: all 0.3s ease; 
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 14px rgba(255, 152, 0, 0.3);
+}
+.btn-primary:hover:not(:disabled) { 
+  transform: translateY(-3px); 
+  background: linear-gradient(135deg, #ffa726 0%, #ff9800 100%);
+  box-shadow: 0 6px 20px rgba(255, 152, 0, 0.45);
+  animation: slideUp 0.3s ease;
+}
+.btn-primary:active:not(:disabled) { 
+  transform: translateY(-1px);
+}
+.btn-buy-now { 
+  flex: 1; 
+  padding: 0.65rem 1.2rem; 
+  background: linear-gradient(135deg, #ffb74d 0%, #ffa726 100%); 
+  color: #fff; 
+  border: none; 
+  border-radius: 6px; 
+  font-weight: 700; 
+  cursor: pointer; 
+  transition: all 0.3s ease; 
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 14px rgba(255, 152, 0, 0.3);
+}
+.btn-buy-now:hover:not(:disabled) { 
+  transform: translateY(-3px); 
+  background: linear-gradient(135deg, #ffa726 0%, #ff9800 100%);
+  box-shadow: 0 6px 20px rgba(255, 152, 0, 0.45);
+  animation: slideUp 0.3s ease;
+}
+.btn-buy-now:active:not(:disabled) { 
+  transform: translateY(-1px);
+}
+.btn-primary:disabled, .btn-buy-now:disabled { 
+  opacity: 0.6; 
+  cursor: not-allowed;
+  box-shadow: none;
+  background: linear-gradient(135deg, #bdbdbd 0%, #9e9e9e 100%);
+}
 .pd-wish-btn { width:42px; height:42px; border-radius:50%; background:rgba(255,255,255,.05); border:1px solid rgba(212,168,67,.15); color:#fff; font-size:1.2rem; cursor:pointer; transition:all .3s; flex-shrink: 0; }
 .pd-wish-btn:hover, .pd-wish-btn.active { background:rgba(212,168,67,.15); color:var(--gold); }
 .pd-seller { color:rgba(255,255,255,.4); font-size:.85rem; padding-top:1rem; border-top:1px solid rgba(255,255,255,.06); }

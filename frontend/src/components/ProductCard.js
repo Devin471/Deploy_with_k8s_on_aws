@@ -11,12 +11,40 @@ function ProductCard({ product, onAddToCart, isAdmin, onDelete, onEdit }) {
   const { addToCart } = useCart();
   const { isCustomer } = useAuth();
 
-  const handleAddToCart = () => {
-    if (!isCustomer) {
-      navigate('/login');
-      return;
+  const handleAddToCart = async () => {
+    try {
+      console.log('[ProductCard] Add to Cart clicked for product:', product._id);
+      console.log('[ProductCard] Is customer:', isCustomer);
+      
+      if (!isCustomer) {
+        // Allow guests to add to local storage cart
+        console.log('[ProductCard] Guest user - adding to localStorage');
+        const guest = JSON.parse(localStorage.getItem('guestCart') || '{"items":[]}');
+        const idx = guest.items.findIndex(i => (i.product?._id || i.product) === product._id);
+        if (idx > -1) {
+          guest.items[idx].quantity += 1;
+        } else {
+          guest.items.push({ product: product._id, quantity: 1 });
+        }
+        localStorage.setItem('guestCart', JSON.stringify(guest));
+        console.log('[ProductCard] Guest cart updated:', guest);
+        alert('Item added to cart! (Login to checkout)');
+        return;
+      }
+      
+      console.log('[ProductCard] Authenticated user - calling addToCart');
+      const result = await addToCart(product._id, 1);
+      console.log('[ProductCard] addToCart result:', result);
+      
+      if (result?.success) {
+        alert('Item added to cart!');
+      } else {
+        alert(result?.message || 'Failed to add item');
+      }
+    } catch (err) {
+      console.error('[ProductCard] Error adding to cart:', err);
+      alert('Error adding to cart');
     }
-    addToCart(product._id, 1);
   };
 
   const handleBuyNow = () => {
@@ -67,9 +95,9 @@ function ProductCard({ product, onAddToCart, isAdmin, onDelete, onEdit }) {
               className="product-button btn-add-cart"
               onClick={handleClick}
               disabled={product.stock === 0}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 10 }}
+              whileHover={{ scale: 1.08, y: -3 }}
+              whileTap={{ scale: 0.96, y: 0 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 12 }}
               title="Add quantity 1 to cart"
             >
               <FaShoppingCart /> {product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
@@ -78,9 +106,9 @@ function ProductCard({ product, onAddToCart, isAdmin, onDelete, onEdit }) {
               className="product-button btn-buy-now"
               onClick={handleBuyNow}
               disabled={product.stock === 0}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 10 }}
+              whileHover={{ scale: 1.08, y: -3 }}
+              whileTap={{ scale: 0.96, y: 0 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 12 }}
               title="Choose quantity and buy"
             >
               <FaBolt /> Buy Now
