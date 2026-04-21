@@ -61,6 +61,10 @@ export default function Payment() {
         amount: Math.round(total * 100), // Convert to paise
       });
 
+      // 🔍 Temp: Verify Razorpay Key is loaded from env
+      console.log('🔑 Razorpay Key:', process.env.REACT_APP_RAZORPAY_KEY_ID);
+      console.log('📊 Key loaded:', !!process.env.REACT_APP_RAZORPAY_KEY_ID ? '✅ YES' : '❌ NO (undefined)');
+
       const options = {
         key: process.env.REACT_APP_RAZORPAY_KEY_ID,
         amount: Math.round(total * 100),
