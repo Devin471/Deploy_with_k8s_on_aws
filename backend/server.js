@@ -273,6 +273,10 @@ const startServer = async () => {
 
     // Start Express server
     const server = app.listen(PORT, () => {
+      // Check Razorpay credentials are loaded
+      console.log(`\n✅ Razorpay Key ID loaded: ${!!process.env.RAZORPAY_KEY_ID}`);
+      console.log(`✅ Razorpay Secret loaded: ${!!process.env.RAZORPAY_KEY_SECRET}\n`);
+
       console.log(`
 ╔════════════════════════════════════════════════════════════╗
 ║         🚀 MyFashion Backend Server Started 🚀             ║

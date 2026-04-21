@@ -15,10 +15,14 @@ const initRazorpay = () => {
     if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
       throw new Error('Missing RAZORPAY_KEY_ID or RAZORPAY_KEY_SECRET environment variables');
     }
+    console.log('🔐 Initializing Razorpay with env vars...');
+    console.log('   Key ID loaded:', !!process.env.RAZORPAY_KEY_ID);
+    console.log('   Secret loaded:', !!process.env.RAZORPAY_KEY_SECRET);
     razorpay = new Razorpay({
       key_id: process.env.RAZORPAY_KEY_ID,
       key_secret: process.env.RAZORPAY_KEY_SECRET
     });
+    console.log('✅ Razorpay initialized successfully');
   }
   return razorpay;
 };
