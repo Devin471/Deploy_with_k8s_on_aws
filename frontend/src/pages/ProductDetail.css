@@ -29,12 +29,18 @@
 .in-stock { color:#27ae60; font-weight:500; font-size:.88rem; }
 .out-stock { color:#e74c3c; font-weight:500; font-size:.88rem; }
 
-.pd-actions { display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem; }
+.pd-actions { display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem; flex-wrap: wrap; }
 .pd-qty { display:flex; align-items:center; background:rgba(255,255,255,.05); border:1px solid rgba(212,168,67,.15); border-radius:var(--radius); overflow:hidden; }
 .pd-qty button { width:38px; height:38px; background:transparent; border:none; color:#fff; font-size:1.1rem; cursor:pointer; transition:background .3s; }
 .pd-qty button:hover { background:rgba(212,168,67,.15); }
 .pd-qty span { padding:0 .8rem; color:#fff; font-size:.92rem; min-width:30px; text-align:center; }
-.pd-wish-btn { width:42px; height:42px; border-radius:50%; background:rgba(255,255,255,.05); border:1px solid rgba(212,168,67,.15); color:#fff; font-size:1.2rem; cursor:pointer; transition:all .3s; }
+.pd-buttons { display: flex; gap: 1rem; flex: 1; min-width: 300px; }
+.btn-primary { flex: 1; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, var(--gold), #d4a857); color: #1a1917; border: none; border-radius: var(--radius); font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 1rem; }
+.btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(212, 168, 67, 0.3); }
+.btn-buy-now { flex: 1; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #27ae60, #229954); color: white; border: none; border-radius: var(--radius); font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 1rem; }
+.btn-buy-now:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(39, 174, 96, 0.3); }
+.btn-primary:disabled, .btn-buy-now:disabled { opacity: 0.6; cursor: not-allowed; }
+.pd-wish-btn { width:42px; height:42px; border-radius:50%; background:rgba(255,255,255,.05); border:1px solid rgba(212,168,67,.15); color:#fff; font-size:1.2rem; cursor:pointer; transition:all .3s; flex-shrink: 0; }
 .pd-wish-btn:hover, .pd-wish-btn.active { background:rgba(212,168,67,.15); color:var(--gold); }
 .pd-seller { color:rgba(255,255,255,.4); font-size:.85rem; padding-top:1rem; border-top:1px solid rgba(255,255,255,.06); }
 .pd-seller strong { color:rgba(255,255,255,.7); }

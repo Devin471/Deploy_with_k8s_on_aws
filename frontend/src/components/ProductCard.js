@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { FaShoppingCart, FaEdit, FaTrash, FaStar } from 'react-icons/fa';
+import { FaShoppingCart, FaEdit, FaTrash, FaStar, FaBolt } from 'react-icons/fa';
 import './ProductCard.css';
 
 function ProductCard({ product, onAddToCart, isAdmin, onDelete, onEdit }) {
@@ -17,6 +17,14 @@ function ProductCard({ product, onAddToCart, isAdmin, onDelete, onEdit }) {
       return;
     }
     addToCart(product._id, 1);
+  };
+
+  const handleBuyNow = () => {
+    if (!isCustomer) {
+      navigate('/login');
+      return;
+    }
+    navigate(`/product/${product._id}`);
   };
 
   const handleClick = onAddToCart ? () => onAddToCart(product) : handleAddToCart;
@@ -54,16 +62,30 @@ function ProductCard({ product, onAddToCart, isAdmin, onDelete, onEdit }) {
         <p className="product-price">₹{product.price}</p>
         <p className="product-stock">Stock: {product.stock}</p>
         {!isAdmin ? (
-          <motion.button
-            className="product-button"
-            onClick={handleClick}
-            disabled={product.stock === 0}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 10 }}
-          >
-            <FaShoppingCart /> {product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
-          </motion.button>
+          <div className="product-buttons">
+            <motion.button
+              className="product-button btn-add-cart"
+              onClick={handleClick}
+              disabled={product.stock === 0}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 10 }}
+              title="Add quantity 1 to cart"
+            >
+              <FaShoppingCart /> {product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
+            </motion.button>
+            <motion.button
+              className="product-button btn-buy-now"
+              onClick={handleBuyNow}
+              disabled={product.stock === 0}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 10 }}
+              title="Choose quantity and buy"
+            >
+              <FaBolt /> Buy Now
+            </motion.button>
+          </div>
         ) : (
           <motion.div
             className="admin-actions"

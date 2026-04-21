@@ -29,7 +29,16 @@ export default function ProductDetail() {
     })();
   }, [id]);
 
-  const handleAddToCart = () => { addToCart(product._id, qty); };
+  const handleAddToCart = () => { 
+    addToCart(product._id, qty); 
+  };
+  const handleBuyNow = () => { 
+    addToCart(product._id, qty);
+    // Redirect to checkout after adding to cart
+    setTimeout(() => {
+      window.location.href = '/checkout';
+    }, 300);
+  };
   const toggleWish = () => isInWishlist(product._id) ? removeFromWishlist(product._id) : addToWishlist(product._id);
   const submitReview = async e => {
     e.preventDefault();
@@ -88,7 +97,10 @@ export default function ProductDetail() {
               <span>{qty}</span>
               <button onClick={() => setQty(q => Math.min(product.stock, q + 1))}>+</button>
             </div>
-            <button className="btn btn-primary" onClick={handleAddToCart} disabled={product.stock === 0}>Add to Cart</button>
+            <div className="pd-buttons">
+              <button className="btn btn-primary" onClick={handleAddToCart} disabled={product.stock === 0}>Add to Cart</button>
+              <button className="btn btn-buy-now" onClick={handleBuyNow} disabled={product.stock === 0}>Buy Now</button>
+            </div>
             <button className={`pd-wish-btn ${wishlisted ? 'active' : ''}`} onClick={toggleWish}>{wishlisted ? '♥' : '♡'}</button>
           </div>
 
