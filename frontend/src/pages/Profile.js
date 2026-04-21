@@ -8,21 +8,43 @@ export default function Profile() {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', phone: '' });
   const [msg, setMsg] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
-      try { const { data } = await api.get('/users/profile'); setProfile(data); setForm({ name: data.name, email: data.email, phone: data.phone || '' }); }
-      catch {}
+      try {
+        setError('');
+        const { data } = await api.get('/users/profile');
+        setProfile(data);
+        setForm({ name: data.name, email: data.email, phone: data.phone || '' });
+      } catch (err) {
+        console.error('Failed to load profile:', err);
+        setError('Failed to load profile. Please refresh the page.');
+      } finally {
+        setLoading(false);
+      }
     })();
   }, []);
 
   const handleSave = async e => {
     e.preventDefault();
-    try { const { data } = await api.put('/users/profile', form); setProfile(data); setEditing(false); setMsg('Profile updated!'); setTimeout(() => setMsg(''), 3000); }
-    catch {}
+    try {
+      setError('');
+      const { data } = await api.put('/users/profile', form);
+      setProfile(data);
+      setEditing(false);
+      setMsg('Profile updated!');
+      setTimeout(() => setMsg(''), 3000);
+    } catch (err) {
+      console.error('Failed to update profile:', err);
+      setError('Failed to update profile. Please try again.');
+    }
   };
 
-  if (!profile) return <div className="loading-spinner"><div className="spinner"></div></div>;
+  if (loading) return <div className="loading-spinner"><div className="spinner"></div></div>;
+  if (error) return <div className="error-message"><h3>⚠️ Error</h3><p>{error}</p><button className="btn btn-primary" onClick={() => window.location.reload()}>Refresh Page</button></div>;
+  if (!profile) return <div className="empty-state"><h3>Profile not found</h3></div>;
 
   return (
     <div className="profile-page">

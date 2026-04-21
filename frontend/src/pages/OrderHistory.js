@@ -9,16 +9,26 @@ const statusColors = { processing: '#d4a843', shipped: '#3498db', delivered: '#2
 export default function OrderHistory() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     (async () => {
-      try { const { data } = await api.get('/orders/my'); setOrders(data); }
-      catch {}
-      setLoading(false);
+      try {
+        setError('');
+        const { data } = await api.get('/orders/my');
+        setOrders(data);
+      } catch (err) {
+        console.error('Failed to load orders:', err);
+        setError('Failed to load orders. Please refresh the page.');
+        setOrders([]);
+      } finally {
+        setLoading(false);
+      }
     })();
   }, []);
 
   if (loading) return <div className="loading-spinner"><div className="spinner"></div></div>;
+  if (error) return <div className="error-message"><h3>⚠️ Error</h3><p>{error}</p><button className="btn btn-primary" onClick={() => window.location.reload()}>Refresh Page</button></div>;
 
   return (
     <div className="oh-page">

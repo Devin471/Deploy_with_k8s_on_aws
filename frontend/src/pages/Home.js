@@ -13,11 +13,13 @@ export default function Home() {
   const [categories, setCategories] = useState([]);
   const [latest, setLatest] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
+        setError('');
         const [fp, cp, lp] = await Promise.all([
           api.get('/products?featured=true&limit=8'),
           api.get('/categories'),
@@ -28,7 +30,10 @@ export default function Home() {
           setCategories(cp.data);
           setLatest(lp.data.products || lp.data);
         }
-      } catch {}
+      } catch (err) {
+        console.error('Failed to load home page data:', err);
+        if (!cancelled) setError('Failed to load some content. Please refresh the page.');
+      }
       if (!cancelled) setLoading(false);
     })();
     return () => { cancelled = true; };

@@ -16,15 +16,18 @@ export default function ProductDetail() {
   const [qty, setQty] = useState(1);
   const [loading, setLoading] = useState(true);
   const [reviewForm, setReviewForm] = useState({ rating: 5, title: '', comment: '' });
+  const [reviewMessage, setReviewMessage] = useState('');
   const [tab, setTab] = useState('description');
 
   useEffect(() => {
     (async () => {
       try {
-        const [pr, rv] = await Promise.all([api.get(`/api/products/${id}`), api.get(`/api/reviews/product/${id}`)]);
+        const [pr, rv] = await Promise.all([api.get(`/products/${id}`), api.get(`/reviews/product/${id}`)]);
         setProduct(pr.data);
         setReviews(rv.data);
-      } catch {}
+      } catch (err) {
+        console.error('Failed to load product:', err);
+      }
       setLoading(false);
     })();
   }, [id]);
@@ -43,11 +46,17 @@ export default function ProductDetail() {
   const submitReview = async e => {
     e.preventDefault();
     try {
+      setReviewMessage('');
       await api.post('/reviews', { productId: product._id, ...reviewForm });
       const rv = await api.get(`/reviews/product/${id}`);
       setReviews(rv.data);
       setReviewForm({ rating: 5, title: '', comment: '' });
-    } catch {}
+      setReviewMessage('Review posted successfully!');
+      setTimeout(() => setReviewMessage(''), 3000);
+    } catch (err) {
+      console.error('Failed to submit review:', err);
+      setReviewMessage('Failed to post review. Please try again.');
+    }
   };
 
   if (loading) return <div className="loading-spinner"><div className="spinner"></div></div>;

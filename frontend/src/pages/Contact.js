@@ -6,15 +6,22 @@ import './Contact.css';
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async e => {
     e.preventDefault();
     setLoading(true);
+    setError('');
     try {
       await api.post('/users/tickets', form);
       setSent(true);
-    } catch {}
+      setForm({ name: '', email: '', subject: '', message: '' });
+      setTimeout(() => setSent(false), 5000);
+    } catch (err) {
+      console.error('Failed to send message:', err);
+      setError('Failed to send message. Please try again.');
+    }
     setLoading(false);
   };
 

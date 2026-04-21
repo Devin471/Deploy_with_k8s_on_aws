@@ -12,6 +12,7 @@ export default function Shop() {
   const [categories, setCategories] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [filters, setFilters] = useState({
     sort: searchParams.get('sort') || 'newest',
     minPrice: searchParams.get('minPrice') || '',
@@ -22,11 +23,19 @@ export default function Shop() {
   });
   const page = parseInt(searchParams.get('page')) || 1;
 
-  useEffect(() => { api.get('/categories').then(r => setCategories(r.data)).catch(() => {}); }, []);
+  useEffect(() => { 
+    api.get('/categories')
+      .then(r => setCategories(r.data))
+      .catch(err => {
+        console.error('Failed to load categories:', err);
+        setCategories([]);
+      });
+  }, []);
 
   useEffect(() => {
     (async () => {
       setLoading(true);
+      setError('');
       try {
         const params = new URLSearchParams();
         params.set('page', page); params.set('limit', 12); params.set('sort', filters.sort);
@@ -39,7 +48,12 @@ export default function Shop() {
         const { data } = await api.get(`/products?${params}`);
         setProducts(data.products || data);
         setTotal(data.total || 0);
-      } catch {}
+      } catch (err) {
+        console.error('Failed to load products:', err);
+        setError('Failed to load products. Please try again.');
+        setProducts([]);
+        setTotal(0);
+      }
       setLoading(false);
     })();
   }, [category, page, filters]);

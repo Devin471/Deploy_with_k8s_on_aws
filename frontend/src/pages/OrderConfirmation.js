@@ -14,8 +14,12 @@ export default function OrderConfirmation() {
 
   useEffect(() => {
     (async () => {
-      try { const { data } = await api.get(`/api/orders/${id}`); setOrder(data); }
-      catch {}
+      try { 
+        const { data } = await api.get(`/orders/${id}`); 
+        setOrder(data); 
+      } catch (err) {
+        console.error('Failed to load order:', err);
+      }
       setLoading(false);
     })();
   }, [id]);

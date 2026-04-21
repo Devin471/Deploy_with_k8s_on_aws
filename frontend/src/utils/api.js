@@ -33,6 +33,24 @@ api.interceptors.response.use(
   response => response,
   error => {
     if (error.response) {
+      // Handle 401 Unauthorized - token expired or invalid
+      if (error.response.status === 401) {
+        console.warn('Token expired or invalid. Clearing tokens and redirecting to login.');
+        // Clear all tokens
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('sellerToken');
+        localStorage.removeItem('customerToken');
+        localStorage.removeItem('adminUser');
+        localStorage.removeItem('sellerUser');
+        localStorage.removeItem('customerUser');
+        // Clear cart and wishlist on logout
+        localStorage.removeItem('guestCart');
+        sessionStorage.clear();
+        // Redirect to login
+        if (typeof window !== 'undefined') {
+          window.location.href = '/login';
+        }
+      }
       // Server responded with error status
       return Promise.reject(error);
     } else if (error.request) {
