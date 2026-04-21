@@ -224,9 +224,15 @@
 }
 
 .btn-primary {
-  background: #111;
+  background: linear-gradient(135deg, #ffa726 0%, #fb8c00 100%);
   color: #fff;
   padding: 0.82rem;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #fb8c00 0%, #f57c00 100%);
+  transform: translateY(-2px);
 }
 
 .btn-primary:disabled {

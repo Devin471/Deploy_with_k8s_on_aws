@@ -24,14 +24,15 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--coral), #ff9274);
-  color: #1a1412;
-  box-shadow: var(--glow-coral);
+  background: linear-gradient(135deg, #ffa726 0%, #fb8c00 100%);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(255, 152, 0, 0.3);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px) scale(1.01);
-  box-shadow: 0 0 0 1px rgba(255, 111, 97, 0.28), 0 12px 32px rgba(255, 111, 97, 0.36);
+  box-shadow: 0 6px 20px rgba(255, 152, 0, 0.45);
+  background: linear-gradient(135deg, #fb8c00 0%, #f57c00 100%);
 }
 
 .btn-secondary {

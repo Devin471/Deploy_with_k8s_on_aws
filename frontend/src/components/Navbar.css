@@ -137,14 +137,14 @@
 
 .nav-login-btn {
   padding: 0.45rem 1rem;
-  background: linear-gradient(135deg, var(--beige), var(--beige-soft));
-  color: #1d1714;
+  background: linear-gradient(135deg, #ffa726 0%, #fb8c00 100%);
+  color: #fff;
   font-weight: 700;
   font-size: 0.82rem;
   border-radius: 999px;
 }
 
-.nav-login-btn:hover { transform: translateY(-1px); }
+.nav-login-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3); }
 
 .nav-dropdown { position: relative; }
 .nav-user-btn { display: flex; align-items: center; gap: 0.36rem; background: none; border: none; cursor: pointer; padding: 0.3rem; }

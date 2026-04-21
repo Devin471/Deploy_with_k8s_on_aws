@@ -12,8 +12,8 @@
 .sd-user-info { display:flex; align-items:center; gap:.6rem; margin-bottom:.6rem; }
 .sd-user-avatar { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,var(--gold),var(--gold-dark)); color:#000; font-size:.8rem; font-weight:700; display:flex; align-items:center; justify-content:center; }
 .sd-user-info span:last-child { color:var(--text-muted); font-size:.85rem; }
-.sd-sidebar-footer button { width:100%; padding:.5rem; background:rgba(231,76,60,.1); border:1px solid rgba(231,76,60,.2); color:#e74c3c; border-radius:var(--radius); cursor:pointer; font-size:.82rem; font-family:inherit; transition:all .3s; }
-.sd-sidebar-footer button:hover { background:rgba(231,76,60,.2); }
+.sd-sidebar-footer button { width:100%; padding:.5rem; background:linear-gradient(135deg, #ffa726 0%, #fb8c00 100%); border:1px solid rgba(255,152,0,.3); color:#fff; border-radius:var(--radius); cursor:pointer; font-size:.82rem; font-family:inherit; transition:all .3s; }
+.sd-sidebar-footer button:hover { background:linear-gradient(135deg, #fb8c00 0%, #f57c00 100%); box-shadow:0 4px 12px rgba(255,152,0,.3); }
 
 /* Hamburger Menu */
 .sd-hamburger { display:none; position:fixed; top:1rem; left:1rem; z-index:1000; width:40px; height:40px; padding:0; background:#fff; border:1px solid rgba(212,168,67,.2); border-radius:var(--radius); cursor:pointer; flex-direction:column; justify-content:center; align-items:center; gap:6px; transition:all .3s; }
@@ -49,8 +49,8 @@
 .sd-badge.shipped { background:rgba(52,152,219,.1); color:#3498db; }
 .sd-badge.delivered { background:rgba(39,174,96,.1); color:#27ae60; }
 .sd-badge.cancelled { background:rgba(231,76,60,.1); color:#e74c3c; }
-.sd-action-btn { padding:.3rem .6rem; background:rgba(212,168,67,.08); border:1px solid rgba(212,168,67,.15); color:var(--gold); border-radius:4px; cursor:pointer; font-size:.78rem; margin-right:.3rem; transition:all .3s; font-family:inherit; }
-.sd-action-btn:hover { background:var(--gold); color:#000; }
+.sd-action-btn { padding:.3rem .6rem; background:rgba(255,167,38,.1); border:1px solid rgba(255,167,38,.3); color:#f57c00; border-radius:4px; cursor:pointer; font-size:.78rem; margin-right:.3rem; transition:all .3s; font-family:inherit; }
+.sd-action-btn:hover { background:#f57c00; color:#fff; }
 .sd-action-btn.danger { background:rgba(231,76,60,.08); border-color:rgba(231,76,60,.2); color:#e74c3c; }
 .sd-action-btn.danger:hover { background:#e74c3c; color:#fff; }
 .sd-table select { padding:.3rem .5rem; background:#fff; border:1px solid rgba(31,41,55,.2); border-radius:4px; color:var(--text); font-size:.82rem; cursor:pointer; }
