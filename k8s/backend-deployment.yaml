@@ -17,7 +17,7 @@ spec:
         - name: ecr-secret
       containers:
         - name: backend
-          image: 486979600614.dkr.ecr.ap-south-1.amazonaws.com/fashion-backend:latest
+          image: 731872836867.dkr.ecr.ap-south-1.amazonaws.com/fashion-backend:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 5000
