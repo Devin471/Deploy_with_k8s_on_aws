@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY package*.json ./
 RUN npm config set registry https://registry.npmjs.org/
-RUN npm install --legacy-peer-deps --no-audit --progress=false
+RUN npm ci --only=production
 
 COPY . .
 
