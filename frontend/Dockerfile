@@ -9,7 +9,6 @@ RUN npm config set registry https://registry.npmjs.org/ \
  && npm config set fetch-retry-mintimeout 20000 \
  && npm config set fetch-retry-maxtimeout 120000
 
-RUN npm install --omit=dev --no-audit --progress=false --prefer-offline
 COPY . .
 RUN npm run build
 
