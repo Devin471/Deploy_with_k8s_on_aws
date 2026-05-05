@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY package*.json ./
 RUN npm config set registry https://registry.npmjs.org/
-RUN npm ci --omit=dev
+RUN npm install --omit=dev --no-audit --progress=false
 
 COPY . .
 
