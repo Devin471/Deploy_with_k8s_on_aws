@@ -2,7 +2,8 @@ FROM node:20 AS build
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install
+RUN npm config set registry https://registry.npmjs.org/
+RUN npm install --legacy-peer-deps --no-audit --progress=false
 
 COPY . .
 RUN npm run build
